@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: bank_card_management_system
+
+    datasource:
+        url: jdbc:postgresql://localhost:5432/bankCardManagementSystemDb
+        username: postgres
+        password: postgres
+
+    liquibase:
+        enabled: false
