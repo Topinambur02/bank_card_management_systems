@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_table_card" author="Alex Tyrdanov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="card" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="card">
+            
+            <column autoIncrement="true" name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column defaultValueNumeric="0" name="balance" type="numeric(38, 2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="card_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="validity_period" type="date">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <sql>ALTER TABLE card ADD CONSTRAINT check_status CHECK (status IN ('ACTIVE', 'BLOCKED', 'EXPIRED'));</sql>
+    </changeSet>
+
+</databaseChangeLog>
