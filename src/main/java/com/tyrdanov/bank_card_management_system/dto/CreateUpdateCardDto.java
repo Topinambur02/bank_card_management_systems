@@ -14,11 +14,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CardDto {
+public class CreateUpdateCardDto {
 
     Long id;
     
-    String maskedCardNumber;
+    String cardNumber;
 
     LocalDate validityPeriod;
 
