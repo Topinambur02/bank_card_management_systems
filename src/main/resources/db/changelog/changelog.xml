@@ -5,5 +5,7 @@
        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
        <include file="create-changeset-card-table.xml" relativeToChangelogFile="true" />
+       <include file="create-changeset-user-table.xml" relativeToChangelogFile="true"/>
+       <include file="create-changeset-one-to-many-between-card-user.xml" relativeToChangelogFile="true"/>
        
 </databaseChangeLog>

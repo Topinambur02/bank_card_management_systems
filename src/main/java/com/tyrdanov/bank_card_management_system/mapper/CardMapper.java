@@ -8,17 +8,21 @@ import org.mapstruct.Named;
 import com.tyrdanov.bank_card_management_system.dto.CardDto;
 import com.tyrdanov.bank_card_management_system.dto.CreateUpdateCardDto;
 import com.tyrdanov.bank_card_management_system.model.Card;
+import com.tyrdanov.bank_card_management_system.model.User;
 import com.tyrdanov.bank_card_management_system.util.CardUtils;
 
 @Mapper
 public interface CardMapper {
     
-    Card toModel(CreateUpdateCardDto dto);
+    @Mapping(target = "id", source = "dto.id")
+    Card toModel(CreateUpdateCardDto dto, User user);
 
+    @Mapping(target = "userId", source = "card.user.id")
     @Mapping(target = "maskedCardNumber", source = ".", qualifiedByName = "getMaskedCardNumber")
     CardDto toDto(Card card);
 
-    void update(CreateUpdateCardDto dto, @MappingTarget Card card);
+    @Mapping(target = "id", source = "dto.id")
+    void update(CreateUpdateCardDto dto, User user, @MappingTarget Card card);
 
     @Named("getMaskedCardNumber")
     default String getMaskedCardNumber(Card card) {

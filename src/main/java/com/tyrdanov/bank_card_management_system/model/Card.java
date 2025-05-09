@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,5 +39,9 @@ public class Card {
     Status status;
 
     Double balance = 0.0;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 
 }

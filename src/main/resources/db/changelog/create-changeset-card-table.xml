@@ -33,6 +33,9 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <sql>ALTER TABLE card ADD CONSTRAINT check_status CHECK (status IN ('ACTIVE', 'BLOCKED', 'EXPIRED'));</sql>

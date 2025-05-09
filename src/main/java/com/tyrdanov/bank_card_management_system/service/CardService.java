@@ -11,6 +11,7 @@ import com.tyrdanov.bank_card_management_system.exception.ResourceNotFoundExcept
 import com.tyrdanov.bank_card_management_system.mapper.CardMapper;
 import com.tyrdanov.bank_card_management_system.model.Card;
 import com.tyrdanov.bank_card_management_system.repository.CardRepository;
+import com.tyrdanov.bank_card_management_system.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class CardService {
 
     private final CardMapper mapper;
     private final CardRepository repository;
+    private final UserRepository userRepository;
     private final PooledPBEStringEncryptor encryptor;
 
     public List<CardDto> getAll() {
@@ -43,8 +45,11 @@ public class CardService {
 
     public CardDto create(CreateUpdateCardDto dto) {
         final var cardNumber = dto.getCardNumber();
+        final var userId = dto.getUserId();
         final var encryptedCardNumber = encryptor.encrypt(cardNumber);
-        final var card = mapper.toModel(dto);
+        final var user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User "));
+
+        final var card = mapper.toModel(dto, user);
 
         card.setCardNumber(encryptedCardNumber);
 
@@ -56,12 +61,17 @@ public class CardService {
     @Transactional
     public CardDto update(CreateUpdateCardDto dto) {
         final var id = dto.getId();
-        final var cardNumber = dto.getCardNumber(); 
+        final var userId = dto.getUserId();
+        final var cardNumber = dto.getCardNumber();
         final var encryptedCardNumber = encryptor.encrypt(cardNumber);
-        final var updatedCard = repository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Card not found"));
+        final var updatedCard = repository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
+        final var user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        mapper.update(dto, updatedCard);
+        mapper.update(dto, user,updatedCard);
         updatedCard.setCardNumber(encryptedCardNumber);
 
         return mapper.toDto(updatedCard);
@@ -76,7 +86,7 @@ public class CardService {
         final var decryptedCardNumber = encryptor.decrypt(cardNumber);
 
         card.setCardNumber(decryptedCardNumber);
-        
+
         return card;
     }
 
