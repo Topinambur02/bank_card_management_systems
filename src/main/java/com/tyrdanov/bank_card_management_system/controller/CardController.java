@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tyrdanov.bank_card_management_system.dto.CardDto;
+import com.tyrdanov.bank_card_management_system.dto.CreateUpdateCardDto;
 import com.tyrdanov.bank_card_management_system.service.CardService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,12 @@ public class CardController {
     }
 
     @PostMapping
-    public CardDto create(@RequestBody CardDto dto) {
+    public CardDto create(@RequestBody CreateUpdateCardDto dto) {
         return service.create(dto);
     }
 
     @PutMapping
-    public CardDto update(@RequestBody CardDto dto) {
+    public CardDto update(@RequestBody CreateUpdateCardDto dto) {
         return service.update(dto);
     }
 
