@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "jasypt.encryptor")
+@ConfigurationProperties("jasypt.encryptor")
 public class EncryptorConfig {
     
     private String password;

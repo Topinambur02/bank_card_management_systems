@@ -1,9 +1,5 @@
 package com.tyrdanov.bank_card_management_system.dto;
 
-import java.time.LocalDate;
-
-import com.tyrdanov.bank_card_management_system.enums.Status;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,18 +10,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateUpdateCardDto {
-
-    Long id;
+public class SignInDto {
     
-    String cardNumber;
+    String email;
 
-    LocalDate validityPeriod;
-
-    Status status;
-
-    Double balance = 0.0;
-
-    Long userId;
+    String password;
 
 }

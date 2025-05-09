@@ -26,4 +26,6 @@ public class CardDto {
 
     Double balance = 0.0;
 
+    Long userId;
+
 }
