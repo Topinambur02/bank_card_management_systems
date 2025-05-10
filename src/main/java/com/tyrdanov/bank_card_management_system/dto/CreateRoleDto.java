@@ -1,7 +1,5 @@
 package com.tyrdanov.bank_card_management_system.dto;
 
-import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,16 +10,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateUserDto {
-    
+public class CreateRoleDto {
+
     Long id;
 
-    String email;
-
-    String password;
-
-    List<Long> cardIds;
-
-    Long roleId;
-
+    String name;
+    
 }

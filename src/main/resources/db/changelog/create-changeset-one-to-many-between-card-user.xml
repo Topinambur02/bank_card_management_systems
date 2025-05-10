@@ -17,6 +17,7 @@
             constraintName="fk_card_user"
             referencedColumnNames="id"
             referencedTableName="users"
+            onDelete="CASCADE"
         />
 
     </changeSet>

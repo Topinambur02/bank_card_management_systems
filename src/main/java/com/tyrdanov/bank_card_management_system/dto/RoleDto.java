@@ -12,16 +12,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateUserDto {
+public class RoleDto {
     
     Long id;
 
-    String email;
+    String name;
 
-    String password;
-
-    List<Long> cardIds;
-
-    Long roleId;
+    List<Long> userIds;
 
 }

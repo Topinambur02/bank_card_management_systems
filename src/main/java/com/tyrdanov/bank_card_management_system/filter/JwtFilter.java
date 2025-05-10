@@ -24,13 +24,14 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final var token = extractToken(request);
 
         if (token != null && jwtUtils.validateToken(token)) {
             final var username = jwtUtils.getUsername(token);
             final var userDetails = userDetailsService.loadUserByUsername(username);
-            final var authorities = userDetails.getAuthorities();
+            final var authorities = jwtUtils.getAuthorities(token);
             final var authorization = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authorization);
