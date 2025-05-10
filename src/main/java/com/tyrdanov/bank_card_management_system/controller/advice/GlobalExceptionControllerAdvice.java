@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tyrdanov.bank_card_management_system.dto.ErrorDto;
+import com.tyrdanov.bank_card_management_system.exception.ResourceNotFoundException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,17 +44,28 @@ public class GlobalExceptionControllerAdvice implements AuthenticationEntryPoint
         return handleException(request, exception);
     }
 
+    // 403: Forbidden
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ErrorDto handleForbiddenException(AccessDeniedException exception, HttpServletRequest request) {
+        return handleException(request, exception);
+    }
+
     // 404: Not found
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ErrorDto handleNotFoundException(NoHandlerFoundException exception, HttpServletRequest request) {
+    @ExceptionHandler({
+        ResourceNotFoundException.class,
+        NoHandlerFoundException.class
+    })
+    public ErrorDto handleNotFoundException(Exception exception, HttpServletRequest request) {
         return handleException(request, exception);
     }
 
     // 405: Method not allowed
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ErrorDto handleMethodNotAllowedException(HttpRequestMethodNotSupportedException exception, HttpServletRequest request) {
+    public ErrorDto handleMethodNotAllowedException(HttpRequestMethodNotSupportedException exception,
+            HttpServletRequest request) {
         return handleException(request, exception);
     }
 
