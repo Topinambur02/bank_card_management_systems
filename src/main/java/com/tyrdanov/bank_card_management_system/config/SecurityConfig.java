@@ -8,11 +8,13 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.tyrdanov.bank_card_management_system.controller.advice.GlobalExceptionControllerAdvice;
 import com.tyrdanov.bank_card_management_system.filter.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final GlobalExceptionControllerAdvice exceptionHandler;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,6 +41,8 @@ public class SecurityConfig {
                                 .requestMatchers("/{cardId}/request-block").hasRole("USER")
                                 .requestMatchers("/transfer").hasRole("USER")
                                 .anyRequest().permitAll())
+                .anonymous(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(exceptionHandler))
                 .formLogin(login -> login.loginProcessingUrl("/login"))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
