@@ -19,6 +19,10 @@ spring:
         change-log: classpath:/db/changelog/changelog.xml
         enabled: true
 
+    web:
+        resources:
+            add-mappings: false
+
 jasypt:
     encryptor:
         password: ${JASYPT_ENCRYPTOR_PASSWORD}
