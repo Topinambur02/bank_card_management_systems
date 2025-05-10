@@ -68,7 +68,9 @@ public class CardService {
         final var cardNumber = dto.getCardNumber();
         final var userId = dto.getUserId();
         final var encryptedCardNumber = encryptor.encrypt(cardNumber);
-        final var user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User "));
+        final var user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         final var card = mapper.toModel(dto, user);
 
@@ -129,7 +131,7 @@ public class CardService {
                 .findById(cardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
         final var userId = card.getUser().getId();
-        
+
         if (!userId.equals(currentUserId)) {
             throw new AccessDeniedException("You don't have access to this card");
         }
