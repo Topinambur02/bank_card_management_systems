@@ -2,6 +2,7 @@ package com.tyrdanov.bank_card_management_system.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,7 +30,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
                         requests -> requests
-                                .requestMatchers("/api/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/cards", "/cards/block", "/cards/active").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/cards/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/cards").hasRole("ADMIN")
+                                .requestMatchers("/users/**").hasRole("ADMIN")
+                                .requestMatchers("/cards/filter**").hasRole("USER")
+                                .requestMatchers("/{cardId}/request-block").hasRole("USER")
+                                .requestMatchers("/transfer").hasRole("USER")
                                 .anyRequest().permitAll())
                 .formLogin(login -> login.loginProcessingUrl("/login"))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

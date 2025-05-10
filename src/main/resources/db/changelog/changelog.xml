@@ -7,5 +7,8 @@
        <include file="create-changeset-card-table.xml" relativeToChangelogFile="true" />
        <include file="create-changeset-user-table.xml" relativeToChangelogFile="true"/>
        <include file="create-changeset-one-to-many-between-card-user.xml" relativeToChangelogFile="true"/>
+       <include file="create-changeset-role-table.xml" relativeToChangelogFile="true" />
+       <include file="add-column-role_id-users-table.xml" relativeToChangelogFile="true" />
+       <include file="insert-value-to-role-table.xml" relativeToChangelogFile="true" />
        
 </databaseChangeLog>
