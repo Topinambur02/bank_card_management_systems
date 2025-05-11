@@ -44,8 +44,8 @@ class RoleServiceTest {
 
     @Test
     void getAll_ShouldReturnListOfRoleDtos() {
-        final var role = new Role();
-        final var roleDto = new RoleDto();
+        final var role = Role.builder().build();
+        final var roleDto = RoleDto.builder().build();
 
         when(repository.findAll()).thenReturn(List.of(role));
         when(mapper.toDto(role)).thenReturn(roleDto);
@@ -60,8 +60,8 @@ class RoleServiceTest {
     @Test
     void getById_WhenRoleExists_ShouldReturnRoleDto() {
         final var id = 1L;
-        final var role = new Role();
-        final var roleDto = new RoleDto();
+        final var role = Role.builder().build();
+        final var roleDto = RoleDto.builder().build();
 
         when(repository.findById(id)).thenReturn(Optional.of(role));
         when(mapper.toDto(role)).thenReturn(roleDto);
@@ -84,10 +84,10 @@ class RoleServiceTest {
 
     @Test
     void create_ShouldSaveAndReturnRoleDto() {
-        final var createDto = new CreateRoleDto();
-        final var role = new Role();
-        final var savedRole = new Role();
-        final var roleDto = new RoleDto();
+        final var createDto = CreateRoleDto.builder().build();
+        final var role = Role.builder().build();
+        final var savedRole = Role.builder().build();
+        final var roleDto = RoleDto.builder().build();
 
         when(mapper.toModel(createDto)).thenReturn(role);
         when(repository.save(role)).thenReturn(savedRole);
@@ -106,14 +106,14 @@ class RoleServiceTest {
     void update_ShouldUpdateAndReturnRoleDto() {
         final var roleId = 1L;
         final var userIds = List.of(1L, 2L);
-        final var dto = new RoleDto();
+        final var dto = RoleDto.builder().build();
 
         dto.setId(roleId);
         dto.setUserIds(userIds);
 
-        final var user1 = new User();
-        final var user2 = new User();
-        final var role = new Role();
+        final var user1 = User.builder().build();
+        final var user2 = User.builder().build();
+        final var role = Role.builder().build();
 
         when(repository.findById(roleId)).thenReturn(Optional.of(role));
         when(userRepository.findAllById(userIds)).thenReturn(List.of(user1, user2));
@@ -141,13 +141,9 @@ class RoleServiceTest {
     void update_WhenUsersNotFound_ShouldLinkOnlyExistingUsers() {
         final var roleId = 1L;
         final var userIds = List.of(1L, 3L);
-        final var dto = new RoleDto();
-
-        dto.setId(roleId);
-        dto.setUserIds(userIds);
-
-        final var user1 = new User();
-        final var role = new Role();
+        final var dto = RoleDto.builder().id(roleId).userIds(userIds).build();
+        final var user1 = User.builder().build();
+        final var role = Role.builder().build();
 
         when(repository.findById(roleId)).thenReturn(Optional.of(role));
         when(userRepository.findAllById(userIds)).thenReturn(List.of(user1));

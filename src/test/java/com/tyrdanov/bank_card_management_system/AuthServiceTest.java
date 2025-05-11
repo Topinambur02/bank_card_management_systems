@@ -39,7 +39,7 @@ import com.tyrdanov.bank_card_management_system.util.JwtUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-    
+
     @Mock
     private JwtUtils jwtUtils;
 
@@ -66,14 +66,19 @@ class AuthServiceTest {
         final var email = "test@example.com";
         final var password = "password";
         final var token = "jwt.token";
-        final var signInDto = new SignInDto(email, password);
-        final var userDetails = User.builder()
+        final var signInDto = SignInDto
+                .builder()
+                .email(email)
+                .password(password)
+                .build();
+        final var userDetails = User
+                .builder()
                 .email(email)
                 .password(password)
                 .build();
 
         final var authentication = mock(Authentication.class);
-        
+
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(userDetails);
         when(jwtUtils.generateToken(userDetails)).thenReturn(token);
@@ -87,7 +92,13 @@ class AuthServiceTest {
 
     @Test
     void login_InvalidCredentials_ThrowsException() {
-        final var signInDto = new SignInDto("wrong@example.com", "wrong");
+        final var email = "wrong@example.com";
+        final var password = "wrong";
+        final var signInDto = SignInDto
+                .builder()
+                .email(email)
+                .password(password)
+                .build();
 
         when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Invalid credentials"));
 
@@ -96,19 +107,32 @@ class AuthServiceTest {
 
     @Test
     void register_UserAlreadyExists_ThrowsException() {
-        final var signUpDto = new SignUpDto("exist@example.com", "pass", null);
+        final var email = "exist@example.com";
+        final var password = "pass";
+        final var signUpDto = SignUpDto
+                .builder()
+                .email(email)
+                .password(password)
+                .build();
 
-        when(userRepository.existsByEmail("exist@example.com")).thenReturn(true);
+        when(userRepository.existsByEmail(email)).thenReturn(true);
 
         assertThrows(UserAlreadyExistsException.class, () -> authService.register(signUpDto));
     }
 
     @Test
     void register_RoleNotFound_ThrowsException() {
+        final var email = "new@example.com";
+        final var password = "pass";
         final var roleId = 99L;
-        final var signUpDto = new SignUpDto("new@example.com", "pass", roleId);
+        final var signUpDto = SignUpDto
+                .builder()
+                .email(email)
+                .password(password)
+                .roleId(roleId)
+                .build();
 
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail(email)).thenReturn(false);
         when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> authService.register(signUpDto));
@@ -116,14 +140,29 @@ class AuthServiceTest {
 
     @Test
     void register_DefaultRole_Success() {
-        final var signUpDto = new SignUpDto("new@example.com", "pass", null);
-        final var defaultRole = new Role(1L, "ROLE_USER", null);
-        final var user = User.builder()
+        final var email = "new@example.com";
+        final var password = "pass";
+        final var signUpDto = SignUpDto
+                .builder()
+                .email(email)
+                .password(password)
+                .build();
+        final var defaultRole = Role
+                .builder()
+                .id(1L)
+                .name("ROLE_USER")
+                .build();
+        final var user = User
+                .builder()
                 .email("new@example.com")
                 .password("encodedPass")
                 .role(defaultRole)
                 .build();
-        final var expectedDto = new UserDto(1L, "new@example.com");
+        final var expectedDto = UserDto
+                .builder()
+                .id(1L)
+                .email("new@example.com")
+                .build();
 
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
         when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(defaultRole));
@@ -135,28 +174,40 @@ class AuthServiceTest {
 
         assertNotNull(result);
         assertEquals(expectedDto.getEmail(), result.getEmail());
-        verify(userRepository).save(argThat(u -> 
-            u.getEmail().equals("new@example.com") &&
-            u.getPassword().equals("encodedPass") &&
-            u.getRole().equals(defaultRole)
-        ));
+        verify(userRepository).save(argThat(u -> u.getEmail().equals("new@example.com") &&
+                u.getPassword().equals("encodedPass") &&
+                u.getRole().equals(defaultRole)));
     }
 
     @Test
     void register_CustomRole_Success() {
         final var roleId = 2L;
-        final var signUpDto = new SignUpDto("user@test.com", "pass", roleId);
-        final var customRole = new Role(roleId, "ROLE_ADMIN", null);
-        final var user = User.builder()
+        final var signUpDto = SignUpDto
+                .builder()
+                .email("user@test.com")
+                .password("pass")
+                .roleId(roleId)
+                .build();
+        final var customRole = Role
+                .builder()
+                .id(roleId)
+                .name("ROLE_ADMIN")
+                .build();
+        final var user = User
+                .builder()
                 .email("user@test.com")
                 .password("encodedPass")
                 .role(customRole)
                 .build();
-        final var expectedDto = new UserDto(1L, "user@test.com");
+        final var expectedDto = UserDto
+                .builder()
+                .id(1L)
+                .email("user@test.com")
+                .build();
 
         when(userRepository.existsByEmail("user@test.com")).thenReturn(false);
         when(roleRepository.findById(roleId))
-            .thenReturn(Optional.of(customRole));
+                .thenReturn(Optional.of(customRole));
         when(bCryptPasswordEncoder.encode("pass")).thenReturn("encodedPass");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toDto(user)).thenReturn(expectedDto);

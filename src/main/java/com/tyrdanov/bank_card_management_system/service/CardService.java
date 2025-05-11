@@ -130,6 +130,7 @@ public class CardService {
         final var card = repository
                 .findById(cardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
+                
         final var userId = card.getUser().getId();
 
         if (!userId.equals(currentUserId)) {
