@@ -16,6 +16,8 @@ import com.tyrdanov.bank_card_management_system.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -40,7 +42,11 @@ public class UserController {
         description = "Возвращает подробную информацию о конкретном пользователе"
     )
     @GetMapping("/{id}")
-    public UserDto getById(@PathVariable Long id) {
+    public UserDto getById(
+        @PathVariable
+        @Min(value = 1, message = "ID должен быть не менее 1") 
+        Long id
+    ) {
         return service.getById(id);
     }
 
@@ -49,7 +55,7 @@ public class UserController {
         description = "Обновляет информацию о существующем пользователе"
     )
     @PutMapping
-    public UserDto update(@RequestBody UpdateUserDto dto) {
+    public UserDto update(@Valid @RequestBody UpdateUserDto dto) {
         return service.update(dto);
     }
 
@@ -58,7 +64,11 @@ public class UserController {
         description = "Удаляет пользователя по указанному идентификатору"
     )
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(
+        @PathVariable
+        @Min(value = 1, message = "ID должен быть не менее 1") 
+        Long id
+    ) {
         service.delete(id);
     }
 

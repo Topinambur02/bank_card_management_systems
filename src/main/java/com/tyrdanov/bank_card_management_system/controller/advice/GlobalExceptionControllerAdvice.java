@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +29,7 @@ import com.tyrdanov.bank_card_management_system.exception.ResourceNotFoundExcept
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
 @ResponseBody
@@ -39,8 +42,13 @@ public class GlobalExceptionControllerAdvice implements AuthenticationEntryPoint
 
     // 400: Bad request
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorDto handleBadRequestException(HttpMessageNotReadableException exception, HttpServletRequest request) {
+    @ExceptionHandler({
+        TypeMismatchException.class,
+        HttpMessageNotReadableException.class,
+        MethodArgumentNotValidException.class,
+        ConstraintViolationException.class
+    })
+    public ErrorDto handleBadRequestException(Exception exception, HttpServletRequest request) {
         return handleException(request, exception);
     }
 

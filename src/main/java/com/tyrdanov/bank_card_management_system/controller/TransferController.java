@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,7 +37,7 @@ public class TransferController {
             required = true,
             content = @Content(schema = @Schema(implementation = TransferRequest.class))
         )    
-        @RequestBody TransferRequest request, 
+        @Valid @RequestBody TransferRequest request, 
         @Parameter(hidden = true) @AuthenticationPrincipal User user
     ) {
         service.transferBetweenUserCards(request, user);

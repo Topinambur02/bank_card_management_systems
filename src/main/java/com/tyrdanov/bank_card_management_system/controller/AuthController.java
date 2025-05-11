@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,14 +33,14 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя", description = "Получает DTO пользователя и создает нового пользователя")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "Пользователь создан", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SignUpDto.class))))
-    public UserDto register(@RequestBody SignUpDto dto) {
+    public UserDto register(@Valid @RequestBody SignUpDto dto) {
         return service.register(dto);
     }
 
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя", description = "Получает DTO пользователя и авторизует пользователя")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "Пользователь авторизован", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = TokenResponse.class))))
-    public TokenResponse login(@RequestBody SignInDto dto) {
+    public TokenResponse login(@Valid @RequestBody SignInDto dto) {
         return service.login(dto);
     }
 

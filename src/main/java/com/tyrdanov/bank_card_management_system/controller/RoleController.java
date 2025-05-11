@@ -17,6 +17,8 @@ import com.tyrdanov.bank_card_management_system.service.RoleService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -41,7 +43,11 @@ public class RoleController {
         description = "Возвращает роль по указанному идентификатору"
     )
     @GetMapping("/{id}")
-    public RoleDto getById(@PathVariable Long id) {
+    public RoleDto getById(
+        @PathVariable 
+        @Min(value = 1, message = "ID должен быть не менее 1") 
+        Long id
+    ) {
         return service.getById(id);
     }
 
@@ -50,7 +56,7 @@ public class RoleController {
         description = "Создает новую роль с указанными параметрами"
     )
     @PostMapping
-    public RoleDto create(@RequestBody CreateRoleDto dto) {
+    public RoleDto create(@Valid @RequestBody CreateRoleDto dto) {
         return service.create(dto);
     }
 
@@ -59,7 +65,7 @@ public class RoleController {
         description = "Обновляет данные существующей роли"
     )
     @PutMapping
-    public RoleDto update(@RequestBody RoleDto dto) {
+    public RoleDto update(@Valid @RequestBody RoleDto dto) {
         return service.update(dto);
     }
 
@@ -68,7 +74,11 @@ public class RoleController {
         description = "Удаляет роль по указанному идентификатору"
     )
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(
+        @PathVariable
+        @Min(value = 1, message = "ID должен быть не менее 1") 
+        Long id
+    ) {
         service.delete(id);
     }
 

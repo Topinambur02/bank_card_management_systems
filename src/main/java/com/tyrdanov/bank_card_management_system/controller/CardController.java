@@ -3,6 +3,7 @@ package com.tyrdanov.bank_card_management_system.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +29,11 @@ import com.tyrdanov.bank_card_management_system.service.CardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -55,10 +61,10 @@ public class CardController {
     @GetMapping("/filter")
     public List<CardDto> getAllWithFilterAndPageable(
             @RequestParam(required = false) Status status,
-            @RequestParam(required = false) Double balance,
-            @RequestParam(required = false) String cardNumber,
-            @RequestParam(required = false) LocalDate validityPeriod,
-            @PageableDefault(sort = "id") Pageable pageable,
+            @RequestParam(required = false) @PositiveOrZero(message = "Баланс не может быть отрицательным") Double balance,
+            @RequestParam(required = false) @Pattern(regexp = "\\d{0,19}", message = "Некорректный номер карты") String cardNumber,
+            @RequestParam(required = false) @PastOrPresent(message = "Дата должна быть в прошлом или настоящем") LocalDate validityPeriod,
+            @PageableDefault(sort = "id") @ParameterObject Pageable pageable,
             @AuthenticationPrincipal User user) {
 
         final var request = CardFilterRequest
@@ -75,7 +81,8 @@ public class CardController {
 
     @Operation(summary = "Получить карту по ID")
     @GetMapping("/{id}")
-    public CardDto getById(@PathVariable Long id) {
+    public CardDto getById(
+        @PathVariable @Min(value = 1, message = "ID должен быть не менее 1") Long id) {
         return service.getById(id);
     }
 
@@ -86,7 +93,7 @@ public class CardController {
                 description = "Данные для создания карты", 
                 required = true
             ) 
-            @RequestBody CreateUpdateCardDto dto) {
+            @Valid @RequestBody CreateUpdateCardDto dto) {
         return service.create(dto);
     }
 
@@ -97,7 +104,7 @@ public class CardController {
                 description = "Данные для блокировки карты",
                 required = true
             )
-            @RequestBody CardBlockingDto dto) {
+            @Valid @RequestBody CardBlockingDto dto) {
         service.cardBlocking(dto);
     }
 
@@ -108,7 +115,7 @@ public class CardController {
                 description = "Данные для активации карты",
                 required = true
             )
-            @RequestBody CardActiveDto dto) {
+            @Valid @RequestBody CardActiveDto dto) {
         service.cardActive(dto);
     }
 
@@ -128,7 +135,7 @@ public class CardController {
                 description = "Обновленные данные карты",
                 required = true
             )    
-            @RequestBody CreateUpdateCardDto dto) {
+            @Valid @RequestBody CreateUpdateCardDto dto) {
         return service.update(dto);
     }
 
@@ -136,7 +143,7 @@ public class CardController {
     @DeleteMapping("/{id}")
     public void delete(
         @Parameter(description = "ID карты для удаления", required = true, example = "123")    
-        @PathVariable Long id) {
+        @PathVariable @Min(value = 1, message = "ID должен быть не менее 1") Long id) {
         service.delete(id);
     }
 
