@@ -39,7 +39,10 @@ public class AuthService {
         final var userDetails = (User) authorization.getPrincipal();
         final var token = jwtUtils.generateToken(userDetails);
 
-        return new TokenResponse(token);
+        return TokenResponse
+                .builder()
+                .token(token)
+                .build();
     }
 
     public UserDto register(SignUpDto dto) {
@@ -59,8 +62,8 @@ public class AuthService {
             role = roleRepository
                     .findByName("ROLE_USER")
                     .orElseThrow(() -> new ResourceNotFoundException("Default role 'USER' not found"));
-        } 
-        
+        }
+
         else {
             role = roleRepository
                     .findById(roleId)

@@ -41,7 +41,7 @@ import com.tyrdanov.bank_card_management_system.specification.CardSpecification;
 
 @ExtendWith(MockitoExtension.class)
 class CardServiceTest {
-    
+
     @Mock
     private CardRepository cardRepository;
 
@@ -89,7 +89,7 @@ class CardServiceTest {
         final var card = mock(Card.class);
 
         when(card.getCardNumber()).thenReturn(ENCRYPTED_NUMBER);
-        
+
         final var page = new PageImpl<>(List.of(card));
 
         when(cardSpecification.filter(request)).thenReturn((Specification<Card>) (root, query, cb) -> null);
@@ -106,9 +106,7 @@ class CardServiceTest {
 
     @Test
     void getById_WhenCardExists_ShouldReturnDecryptedCard() {
-        final var card = new Card();
-
-        card.setCardNumber(ENCRYPTED_NUMBER);
+        final var card = Card.builder().cardNumber(ENCRYPTED_NUMBER).build();
 
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(card));
         when(encryptor.decrypt(ENCRYPTED_NUMBER)).thenReturn(DECRYPTED_NUMBER);
@@ -129,11 +127,12 @@ class CardServiceTest {
 
     @Test
     void create_ShouldEncryptNumberAndSaveCard() {
-        final var dto = new CreateUpdateCardDto();
-        dto.setCardNumber(DECRYPTED_NUMBER);
-        dto.setUserId(USER_ID);
-
-        final var user = new User();
+        final var dto = CreateUpdateCardDto
+                .builder()
+                .cardNumber(DECRYPTED_NUMBER)
+                .userId(USER_ID)
+                .build();
+        final var user = User.builder().build();
         final var card = mock(Card.class);
 
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
@@ -151,9 +150,10 @@ class CardServiceTest {
 
     @Test
     void create_WhenUserNotExists_ShouldThrowException() {
-        final var dto = new CreateUpdateCardDto();
-
-        dto.setUserId(USER_ID);
+        final var dto = CreateUpdateCardDto
+                .builder()
+                .userId(USER_ID)
+                .build();
 
         when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
@@ -162,13 +162,14 @@ class CardServiceTest {
 
     @Test
     void update_ShouldUpdateCardWithEncryptedNumber() {
-        final var dto = new CreateUpdateCardDto();
-        dto.setId(CARD_ID);
-        dto.setUserId(USER_ID);
-        dto.setCardNumber(DECRYPTED_NUMBER);
-
+        final var dto = CreateUpdateCardDto
+                .builder()
+                .id(CARD_ID)
+                .userId(USER_ID)
+                .cardNumber(DECRYPTED_NUMBER)
+                .build();
         final var existingCard = mock(Card.class);
-        final var user = new User();
+        final var user = User.builder().build();
 
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(existingCard));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
@@ -192,7 +193,7 @@ class CardServiceTest {
     @Test
     void cardBlocking_ShouldSetStatusToBlocked() {
         final var dto = CardBlockingDto.builder().cardId(CARD_ID).build();
-        final var card = new Card();
+        final var card = Card.builder().build();
 
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(card));
 
@@ -204,8 +205,8 @@ class CardServiceTest {
     @Test
     void cardActive_ShouldSetStatusToActive() {
         final var dto = CardActiveDto.builder().cardId(CARD_ID).build();
-        final var card = new Card();
-        
+        final var card = Card.builder().build();
+
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(card));
 
         cardService.cardActive(dto);
@@ -215,13 +216,9 @@ class CardServiceTest {
 
     @Test
     void requestBlockCard_WhenUserIsOwner_ShouldBlockCard() {
-        final var user = new User();
+        final var user = User.builder().id(USER_ID).build();
 
-        user.setId(USER_ID);
-
-        final var card = new Card();
-
-        card.setUser(user);
+        final var card = Card.builder().user(user).build();
 
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(card));
 
@@ -232,13 +229,9 @@ class CardServiceTest {
 
     @Test
     void requestBlockCard_WhenUserIsNotOwner_ShouldThrowException() {
-        final var otherUser = new User();
-
-        otherUser.setId(2L);
-
-        final var card = new Card();
-
-        card.setUser(new User(USER_ID, null, null, null, null));
+        final var otherUser = User.builder().id(2L).build();
+        final var user = User.builder().id(USER_ID).build();
+        final var card = Card.builder().user(user).build();
 
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(card));
 

@@ -12,14 +12,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "DTO для создания/обновления карты")
 public class CreateUpdateCardDto {
@@ -42,6 +40,7 @@ public class CreateUpdateCardDto {
     @Schema(description = "Статус карты", example = "ACTIVE")
     Status status;
 
+    @Builder.Default
     @DecimalMin(value = "0.0", message = "Баланс не может быть отрицательным")
     @Schema(description = "Баланс", example = "0.0")
     Double balance = 0.0;

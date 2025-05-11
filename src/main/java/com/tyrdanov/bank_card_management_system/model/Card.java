@@ -13,10 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
@@ -24,8 +22,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Card {
     
@@ -40,6 +36,7 @@ public class Card {
     @Enumerated(EnumType.STRING)
     Status status;
 
+    @Builder.Default
     Double balance = 0.0;
 
     @JoinColumn(name = "user_id")

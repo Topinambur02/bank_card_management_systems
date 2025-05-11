@@ -35,26 +35,26 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-    
+
     @Mock
     private UserMapper userMapper;
-    
+
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    
+
     @Mock
     private CardRepository cardRepository;
-    
+
     @Mock
     private RoleRepository roleRepository;
-    
+
     @InjectMocks
     private UserService userService;
 
     @Test
     void getAll_ShouldReturnListOfUsers() {
-        final var user = new User();
-        final var userDto = new UserDto();
+        final var user = User.builder().build();
+        final var userDto = UserDto.builder().build();
 
         when(userRepository.findAll()).thenReturn(List.of(user));
         when(userMapper.toDto(any(User.class))).thenReturn(userDto);
@@ -69,8 +69,8 @@ class UserServiceTest {
     @Test
     void getById_WhenUserExists_ShouldReturnUserDto() {
         final var userId = 1L;
-        final var user = new User();
-        final var userDto = new UserDto();
+        final var user = User.builder().build();
+        final var userDto = UserDto.builder().build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(userDto);
@@ -97,17 +97,17 @@ class UserServiceTest {
         final var cardIds = List.of(3L, 4L);
         final var rawPassword = "password";
         final var encodedPassword = "encodedPassword";
-        final var dto = new UpdateUserDto();
-
-        dto.setId(userId);
-        dto.setPassword(rawPassword);
-        dto.setRoleId(roleId);
-        dto.setCardIds(cardIds);
-
-        final var role = new Role();
-        final var cards = List.of(new Card(), new Card());
-        final var user = new User();
-        final var userDto = new UserDto();
+        final var dto = UpdateUserDto
+                .builder()
+                .id(userId)
+                .password(rawPassword)
+                .roleId(roleId)
+                .cardIds(cardIds)
+                .build();
+        final var role = Role.builder().build();
+        final var cards = List.of(Card.builder().build(), Card.builder().build());
+        final var user = User.builder().build();
+        final var userDto = UserDto.builder().build();
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
         when(cardRepository.findAllById(cardIds)).thenReturn(cards);
@@ -129,9 +129,7 @@ class UserServiceTest {
     @Test
     void update_WhenRoleNotFound_ShouldThrowException() {
         final var roleId = 999L;
-        final var dto = new UpdateUserDto();
-
-        dto.setRoleId(roleId);
+        final var dto = UpdateUserDto.builder().roleId(roleId).build();
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
 

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -47,13 +46,15 @@ public class JwtUtils {
     }
 
     public List<SimpleGrantedAuthority> getAuthorities(String token) {
-        final Claims claims = Jwts.parser()
+        final var authorities = (List<?>) Jwts
+                .parser()
                 .verifyWith(key())
                 .build()
                 .parseSignedClaims(token)
-                .getPayload();
+                .getPayload()
+                .get("authorities");
 
-        return ((List<?>) claims.get("authorities"))
+        return authorities
                 .stream()
                 .map(authority -> new SimpleGrantedAuthority((String) authority))
                 .toList();
